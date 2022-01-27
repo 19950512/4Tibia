@@ -33,3 +33,5 @@ CDN/package-lock.json
 Discord/node_modules/*
 www/node_modules/*
 composer.lock
+
+www/package-lock.json

@@ -1,6 +1,6 @@
 <?php
 
-namespace crawler\Controllers\News;
+namespace crawler\Controllers\Players;
 
 use crawler\Controllers\Controller;
 
@@ -10,13 +10,21 @@ use Core\De as de;
 
 require '../vendor/autoload.php';
 
-class News extends Controller {
+class Players extends Controller {
 
-	protected $controller = 'News';
+	protected $controller = 'Players';
 
 	public function __construct(){
 
 		parent::__construct();
+
+		$crawler = new Crawler();
+
+		$nickname = $this->Router->action;
+		
+		$player = $crawler->player($nickname);
+
+		self::response($player);
 	}
 
 	public function index(){

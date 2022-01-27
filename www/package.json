@@ -1,0 +1,16 @@
+{
+  "name": "4Tibia",
+  "version": "1.0.0",
+  "description": "4Tibia",
+  "main": "gulpfile.js",
+  "scripts": {
+    "rede": "gulp rede"
+  },
+  "author": "19950512",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "gulp": "^4.0.0",
+    "gulp-connect-php": "^1.0.3"
+  }
+}
