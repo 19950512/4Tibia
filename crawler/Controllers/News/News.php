@@ -31,8 +31,8 @@ class News extends Controller {
 		$mustache = [];
 
 		$crawler = new Crawler();
-		$player = $crawler->player('Buli Nauta');
-		new de($player);
+		$new = $crawler->news(6544);
+		new de($new);
 
 		// Render View
 		$this->render($mustache, $this->controller, $this->viewName);

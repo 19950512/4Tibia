@@ -4,6 +4,8 @@ namespace Core;
 
 use Exception;
 
+use Core\De as de;
+
 class Core {
 
 	public static function mustache($mustache = [], $mask = ''){
@@ -41,6 +43,20 @@ class Core {
 	public static function date($mask = ''){
 		$mask = ($mask == '') ? 'd/m/Y' : $mask;
 		return date($mask);
+	}
+	public static function mkdir($path){
+		$mkdir = explode('/', $path);
+		$atual = '';
+		foreach ($mkdir as $nivel => $pasta){
+			if($pasta === '..'){
+				$atual .= $pasta.'/';
+			}else{
+				$atual .= $pasta.'/';
+				if(!is_dir($atual)){
+					mkdir($atual);
+				}
+			}
+		}
 	}
 	public static function datemask($date = 'today', $mask = 'd/m/Y'){
 		$date = ($date == 'today') ? date('d-m-Y') : $date;

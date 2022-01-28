@@ -25,7 +25,7 @@ class Controller {
 
     public function __construct($login = false){
 
-        header('Content-Type: application/json; charset=utf-8');
+        //header('Content-Type: application/json; charset=utf-8');
         
         if(isset($_POST['push']) and $_POST['push'] === 'push'){
             $this->pushHistory = true;
