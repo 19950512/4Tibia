@@ -13,6 +13,8 @@ require '../vendor/autoload.php';
 
 class Crawler {
 
+	static $baseStatic = 'https://static.tibia.com/';
+
     function news($noticia_id){
 
 		$base = 'https://www.tibia.com/news/?subtopic=newsarchive&id='.$noticia_id;
@@ -71,8 +73,8 @@ class Crawler {
 			foreach($imagemss as $keyimgs => $imagemURL){
 
 				$imagemNome = '';
-				if(strpos($imagemURL, 'static.tibia.com/images/') !== false){
-					$imagemNome = explode('static.tibia.com/images/', $imagemURL)[1] ?? '';
+				if(strpos($imagemURL, self::$baseStatic.'images/') !== false){
+					$imagemNome = explode(self::$baseStatic.'images/', $imagemURL)[1] ?? '';
 					$extensaoIMG = explode('.', $imagemNome);
 
 					$pastas = explode('/', $extensaoIMG[0]);
@@ -99,8 +101,8 @@ class Crawler {
 			}
 		}
 
-		$conteudo_post = str_replace('https://static.tibia.com/', '', $conteudo_post);
-
+		$conteudo_post = str_replace(self::$baseStatic, '', $conteudo_post);
+/
 		return [
 			'id' => $noticia_id,
 			'data' => $data,

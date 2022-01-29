@@ -6,7 +6,7 @@ $SERVER_NAME = [
 	'api.4tibia.local' 					=> 'API',
 ];
 
-define( 'DEV', ($SERVER_NAME[$_SERVER['SERVER_NAME'] ?? ''] ?? false) ? true : false);
+define( 'DEV', false);//($SERVER_NAME[$_SERVER['SERVER_NAME'] ?? ''] ?? false) ? true : false);
 
 define( 'DIR', __DIR__ );
 define( 'DS', DIRECTORY_SEPARATOR );
