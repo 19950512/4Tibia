@@ -31,8 +31,14 @@ class News extends Controller {
 		$mustache = [];
 
 		$crawler = new Crawler();
-		$new = $crawler->news(6544);
-		new de($new);
+		
+		/* $new = $crawler->news(830);
+
+		new de($new); */
+		for($i = 829; $i <= 66000; $i++){
+			$new = $crawler->news($i);
+		}
+		new de('cabo');
 
 		// Render View
 		$this->render($mustache, $this->controller, $this->viewName);

@@ -8,12 +8,23 @@ use Core\De as de;
 use Core\View;
 use Exception;
 
+use Model\Discord;
+
 
 require '../vendor/autoload.php';
 
 class Crawler {
 
+	static $base = 'https://www.tibia.com/';
+
 	static $baseStatic = 'https://static.tibia.com/';
+
+	private static $logs = [
+		'news' => [
+			'images' => false,
+			'find' => true,
+		]
+	];
 
     function news($noticia_id){
 
@@ -64,10 +75,11 @@ class Crawler {
 		preg_match($pattern, $html_comprimido, $conteudo_post);
 		$conteudo_post = $conteudo_post[1] ?? '';
 
-		$pattern = "/ src=\"(.*?)\" /";
+		$pattern = "/<img src=\"(.*?)\"/";
 		preg_match_all($pattern, $html_comprimido, $imagens);
 
 		unset($imagens[0]);
+
 		foreach($imagens as $keyimg => $imagemss){
 
 			foreach($imagemss as $keyimgs => $imagemURL){
@@ -75,41 +87,121 @@ class Crawler {
 				$imagemNome = '';
 				if(strpos($imagemURL, self::$baseStatic.'images/') !== false){
 					$imagemNome = explode(self::$baseStatic.'images/', $imagemURL)[1] ?? '';
-					$extensaoIMG = explode('.', $imagemNome);
-
-					$pastas = explode('/', $extensaoIMG[0]);
-					unset($pastas[count($pastas) - 1]);
-					$pastas = implode('/', $pastas);
-					Core::mkdir('images/'.$pastas);
-
-					$imagemdocao = Core::curl([
-						'url' => $imagemURL,
-						'headers' => [
-							"Content-Type: application/json",
-						]
-					])['data'] ?? '';
-
+				
 					$imagemNome = 'images/'.$imagemNome;
 
-					if(!is_file($imagemNome) and strlen($imagemdocao) >= 500){
+					if(!is_file($imagemNome)){
 						try {
-							file_put_contents($imagemNome, $imagemdocao);
+
+							$extensaoIMG = explode('.', $imagemNome);
+
+							$pastas = explode('/', $extensaoIMG[0]);
+							unset($pastas[count($pastas) - 1]);
+							$pastas = implode('/', $pastas);
+							Core::mkdir('images/'.$pastas);
+
+
+							if(self::$logs['news']['images']){
+								Discord::send([
+									'username' => 'Crawler [ News ]',
+									'mensagem' => 'Vamos tentar pegar a imagem. URL: '.$imagemURL]
+								);
+							}
+
+							$imagemdocao = Core::curl([
+								'url' => $imagemURL,
+								'headers' => [
+									"Content-Type: application/json",
+								]
+							])['data'] ?? '';
+
+							if(strlen($imagemdocao) >= 200){
+								
+								file_put_contents($imagemNome, $imagemdocao);
+								
+								if(self::$logs['news']['images']){
+									Discord::send([
+										'username' => 'Crawler [ News ]',
+										'mensagem' => 'Salvamos a imagem. URL: '.$imagemURL]
+									);
+								}
+			
+							}else{
+
+								if(self::$logs['news']['images']){
+									Discord::send([
+										'username' => 'Crawler [ News ]',
+										'mensagem' => 'Parece que a imagem não existe mais. URL: '.$imagemURL]
+									);
+								}
+							}
+
+
 						} catch (Exception $th) {
+
+							if(self::$logs['news']['images']){
+								Discord::send([
+									'username' => 'Crawler [ News ]',
+									'mensagem' => 'Erro ao salvar a imagem. URL: '.$imagemURL]
+								);
+							}
+						}
+					
+					}else{
+
+						if(self::$logs['news']['images']){
+							Discord::send([
+								'username' => 'Crawler [ News ]',
+								'mensagem' => 'Ja existe essa imagem. URL '.$imagemURL]
+							);
 						}
 					}
 				}
 			}
 		}
 
+		if(empty($titulo)){
+
+			if(self::$logs['news']['find']){
+				Discord::send([
+					'username' => 'Crawler [ News ]',
+					'mensagem' => 'Não encontramos nenhuma noticia com o ID: '.$noticia_id]
+				);
+			}
+			return [];
+		}
+
 		$conteudo_post = str_replace(self::$baseStatic, '', $conteudo_post);
-/
-		return [
+
+		if(self::$logs['news']['find']){
+			Discord::send([
+				'username' => 'Crawler [ News ]',
+				'mensagem' => 'Encontramos uma notícia '.
+					PHP_EOL.'- **ID:** '.$noticia_id.
+					PHP_EOL.'- **Titulo:** '.$titulo.
+					PHP_EOL.'- **Data:** '.$data.
+					PHP_EOL.'- **LINK:** '.self::$base.'news/?subtopic=newsarchive&id='.$noticia_id,
+			]);
+		}
+
+		$dataNew = [
 			'id' => $noticia_id,
 			'data' => $data,
 			'titulo' => $titulo,
 			'mensagem' => strip_tags($conteudo_post),
 			'html' => $conteudo_post
 		];
+
+		// Salva no DB
+		$resposta = Queries::newNews([
+			'new_id' => $dataNew['id'],
+			'new_data' => $dataNew['data'],
+			'new_title' => $dataNew['titulo'],
+			'new_body' => $dataNew['mensagem'],
+			'new_body_html' => $dataNew['html'],
+		]);
+
+		return $dataNew;
 	}
 
     function player(String $nickname){
@@ -204,6 +296,19 @@ class Crawler {
                 ];
             }
 		}
+
+		if(!isset($player['name'])){
+			return [];
+		}
+
+		Discord::send([
+			'username' => 'Crawler [ Player ]',
+			'mensagem' => 'Encontramos um player '.
+				PHP_EOL.'- **Name:** '.$player['name'].
+				PHP_EOL.'- **Level:** '.$player['level'].
+				PHP_EOL.'- **Vocation:** '.$player['vocation'].
+				PHP_EOL.'- **LINK:** '.self::$base.'community/?name='.urlencode($player['name']),
+		]);
 
         return $player;
     }

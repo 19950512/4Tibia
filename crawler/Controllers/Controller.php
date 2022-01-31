@@ -7,6 +7,8 @@ use Core\De as de;
 use Core\Core;
 use Core\Router;
 
+use Model\Db\Connection AS DB;
+
 class Controller {
 
     /* Object VIEW / Layout */
@@ -27,6 +29,8 @@ class Controller {
 
         //header('Content-Type: application/json; charset=utf-8');
         
+        $db = new DB();
+
         if(isset($_POST['push']) and $_POST['push'] === 'push'){
             $this->pushHistory = true;
         }

@@ -13,3 +13,6 @@ CREATE TABLE public.news
 
 ALTER TABLE public.news
     OWNER to tibia;
+
+ALTER TABLE public.news
+    ADD UNIQUE (new_id);

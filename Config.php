@@ -36,11 +36,11 @@ if(!DEV){
 set_error_handler(
     function($a, $b, $c, $d){
 
-        if(!DEV){
+       /*  if(!DEV){
             header('HTTP/1.1 503 Service Temporarily Unavailable');
             echo json_encode(['r' => 'no', 'data' => 'Ops, algo de errado não deu certo... Você informou os parâmetros corretos?']);
             exit;
-        }
+        } */
 
         echo '<table border="1"><thead><tr><th style="text-align: left">Arquivo</th><th style="text-align: left">Linha</th><th style="text-align: left">Erro</th></tr></thead>';
         echo "<tbody><tr><td>$c</td><td>$d</td><td>$b</td></tr></tbody></table>";
