@@ -171,7 +171,7 @@ class Crawler {
 			return [];
 		}
 
-		$conteudo_post = str_replace(self::$baseStatic, '', $conteudo_post);
+		$conteudo_post = str_replace(self::$baseStatic, SITE_PROTOCOLO.SITE_DOMINIO_SISTEMA.'/', $conteudo_post);
 
 		if(self::$logs['news']['find']){
 			Discord::send([
@@ -191,15 +191,6 @@ class Crawler {
 			'mensagem' => strip_tags($conteudo_post),
 			'html' => $conteudo_post
 		];
-
-		// Salva no DB
-		$resposta = Queries::newNews([
-			'new_id' => $dataNew['id'],
-			'new_data' => $dataNew['data'],
-			'new_title' => $dataNew['titulo'],
-			'new_body' => $dataNew['mensagem'],
-			'new_body_html' => $dataNew['html'],
-		]);
 
 		return $dataNew;
 	}

@@ -14,12 +14,16 @@ define( 'CORE', DIR . DS . 'Core' );
 define( 'CONTROLLERS', DIR . DS . 'Controllers' );
 define( 'EXTENSAO_VIEW', '.html' );
 
+define( 'API_CONFIG', [
+	'limit' => 5 // Limitar os results em X. force pagination
+]);
+
 /* CONFIGURAÇÕES DO SITE */
 
 define( 'SITE_PROTOCOLO', 'http://' );
 define( 'SITE_DOMINIO', $_SERVER['SERVER_NAME'] ?? '' );
 define( 'SITE_NOME', '4 Tibia - API' );
-define( 'SITE_DOMINIO_SISTEMA', SITE_NOME.'.local' );
+define( 'SITE_DOMINIO_SISTEMA', key($SERVER_NAME) );
 define( 'SITE_IMAGEM', '/img/facebook.jpg' );
 
 define( 'DOMINIO_CDN', 'https://cdn.'.SITE_DOMINIO);

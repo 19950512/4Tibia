@@ -5,6 +5,7 @@ namespace crawler\Controllers\News;
 use crawler\Controllers\Controller;
 
 use Model\Crawler\Crawler;
+use Model\Api\Api;
 
 use Core\De as de;
 
@@ -31,13 +32,15 @@ class News extends Controller {
 		$mustache = [];
 
 		$crawler = new Crawler();
-		
+		$api = new Api();
+		new de($api->newsGet());
+
 		/* $new = $crawler->news(830);
 
-		new de($new); */
-		for($i = 829; $i <= 66000; $i++){
+		new de($new);
+		for($i = 829; $i <= 929; $i++){
 			$new = $crawler->news($i);
-		}
+		} */
 		new de('cabo');
 
 		// Render View

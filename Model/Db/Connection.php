@@ -136,10 +136,19 @@ class Connection {
             }
         }
         $order = isset($data['order']) ? 'ORDER BY '.implode(', ', $data['order']) : '';
+
+        $limit = '';
+        if(isset($data['limit']) and is_numeric($data['limit'])){
+            $limit = 'LIMIT '.$data['limit'];
+        }
+        $offset = '';
+        if(isset($data['offset']) and is_numeric($data['offset'])){
+            $offset = 'OFFSET '.$data['offset'];
+        }
         
         try {
             //code...
-            $sql = self::$instance->prepare("SELECT $colunas FROM $tabela $where $order");
+            $sql = self::$instance->prepare("SELECT $colunas FROM $tabela $where $order $limit $offset");
             $sql->execute();
             $fetch = $sql->fetchAll(PDO::FETCH_ASSOC);
             
